@@ -7,11 +7,10 @@ library(bslib)
 library(thematic)
 
 thematic_shiny(font = "auto")
-data(diamonds)
 
 ui <- fluidPage(
   theme = bs_theme(
-    #version = 5,
+    version = 5,
     bootswatch = "bootstrap"
   ),
   h1("Exploration des Diamants"),
@@ -56,15 +55,11 @@ server <- function(input, output) {
   output$DiamondPlot <- renderPlot({
     diamonds |>
       filter(price > input$prix) |>
-      filter(color %in% input$choix_couleur) |>
-      ggplot(aes(x = height)) +
-      geom_histogram(
-        binwidth = 10,
-        fill = "white",
-        color = "black"
-      ) +
+      filter(color %in% input$choix_rose) |>
+      ggplot(aes(x = carat, y = price), color = color) +
+      geom_point(alpha = 0.6)+
       labs(
-        title = glue("Vous avez selectionné le genre : {input$choix_couleur}")
+        title = glue("Prix : {input$prix} Couleur : {input$choix_couleur}")
       )
   })
   
@@ -85,7 +80,6 @@ server <- function(input, output) {
     output$resultat <- renderText({ paste("Vous avez choisi :", input$choix_rose) })
   
   observeEvent(c(input$bouton, input$prix), {
-    message("T'as cliqué fdp.")
     showNotification(
       "La valeur du slider a changé...",
       type = "message"
