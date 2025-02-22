@@ -59,24 +59,15 @@ server <- function(input, output) {
       filter(0.5 < carat & carat < 3.7) |>
       ggplot(aes(x = carat, y = price)) +
       geom_point(
-        alpha = 0.6,
-        color = ifelse(input$choix_rose == "opt1", "pink", "black"))+
+        color = ifelse(input$choix_rose == "opt1", "#ffc4cf", "#5f5f5f"))+
       labs(
         title = glue("prix : {input$prix} & color : {input$choix_couleur}")
       )
   })
   
-  output$Nombre_personnes <- renderText({
-    glue("Nombre de personnages selectionnés : {
-    nrow(
-      starwars |>
-        filter(price > input$prix) |>
-        filter(color %in% input$choix_couleur))}")
-  })
-  
   output$DiamondTable <- renderDT({
     diamonds |>
-      # filter(price > input$prix) |>  Le tableau final nest pas pas prix eheh
+      # filter(price > input$prix) |>  Le tableau final se modifie sans le prix
       filter(color %in% input$choix_couleur)
   })
   
