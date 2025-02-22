@@ -45,10 +45,11 @@ ui <- fluidPage(
       )
     ),
     mainPanel(
-      plotOutput("DiamondPlot")
+      plotOutput("DiamondPlot"),
+      DTOutput(outputId = "DiamondTable")
     )
   ),
-  DTOutput(outputId = "DiamondTable")
+
 )
 
 server <- function(input, output) {
@@ -79,9 +80,9 @@ server <- function(input, output) {
   
     output$resultat <- renderText({ paste("Vous avez choisi :", input$choix_rose) })
   
-  observeEvent(c(input$bouton, input$prix), {
+  observeEvent(input$bouton, {
     showNotification(
-      "La valeur du slider a changé...",
+      glue("Prix : {input$prix} Couleur : {input$choix_couleur}"),
       type = "message"
     )
   })
