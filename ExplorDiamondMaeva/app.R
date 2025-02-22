@@ -6,14 +6,14 @@ library(DT)
 library(bslib)
 library(thematic)
 
-thematic_shiny(font = "auto")
+thematic_shiny(font = "Minty")
 
 ui <- fluidPage(
   theme = bs_theme(
     version = 5,
-    bootswatch = "bootstrap"
+    bootswatch = "minty" 
   ),
-  h1("Exploration des Diamants"),
+  h2("Exploration des Diamants"),
   sidebarLayout(
     sidebarPanel(
       radioButtons(
@@ -55,12 +55,14 @@ ui <- fluidPage(
 server <- function(input, output) {
   output$DiamondPlot <- renderPlot({
     diamonds |>
-      filter(price > input$prix) |>
-      filter(color %in% input$choix_rose) |>
-      ggplot(aes(x = carat, y = price), color = color) +
-      geom_point(alpha = 0.6)+
+      filter(price < input$prix) |>
+      filter(0.5 < carat & carat < 3.7) |>
+      ggplot(aes(x = carat, y = price)) +
+      geom_point(
+        alpha = 0.6,
+        color = ifelse(input$choix_rose == "opt1", "pink", "black"))+
       labs(
-        title = glue("Prix : {input$prix} Couleur : {input$choix_couleur}")
+        title = glue("prix : {input$prix} & color : {input$choix_couleur}")
       )
   })
   
@@ -78,11 +80,9 @@ server <- function(input, output) {
       filter(color %in% input$choix_couleur)
   })
   
-    output$resultat <- renderText({ paste("Vous avez choisi :", input$choix_rose) })
-  
   observeEvent(input$bouton, {
     showNotification(
-      glue("Prix : {input$prix} Couleur : {input$choix_couleur}"),
+      glue("prix : {input$prix} & color : {input$choix_couleur}"),
       type = "message"
     )
   })
