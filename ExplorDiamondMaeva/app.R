@@ -55,25 +55,25 @@ ui <- fluidPage(
 server <- function(input, output) {
   output$DiamondPlot <- renderPlot({
     diamonds |>
-      filter(price < input$prix) |>
-      filter(0.5 < carat & carat < 3.7) |>
+      filter(price <= input$prix) |>
       ggplot(aes(x = carat, y = price)) +
       geom_point(
         color = ifelse(input$choix_rose == "opt1", "#ffc4cf", "#5f5f5f"))+
       labs(
-        title = glue("prix : {input$prix} & color : {input$choix_couleur}")
+        title = glue("prix: {input$prix} & color: {input$choix_couleur}")
       )
   })
   
   output$DiamondTable <- renderDT({
     diamonds |>
+      select(carat, cut, color, clarity, depth, table, price) |>
       # filter(price > input$prix) |>  Le tableau final se modifie sans le prix
       filter(color %in% input$choix_couleur)
   })
   
   observeEvent(input$bouton, {
     showNotification(
-      glue("prix : {input$prix} & color : {input$choix_couleur}"),
+      glue("prix: {input$prix} & color: {input$choix_couleur}"),
       type = "message"
     )
   })
