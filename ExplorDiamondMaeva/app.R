@@ -56,6 +56,7 @@ server <- function(input, output) {
   output$DiamondPlot <- renderPlot({
     diamonds |>
       filter(price <= input$prix) |>
+      filter(color %in% input$choix_couleur) |>
       ggplot(aes(x = carat, y = price)) +
       geom_point(
         color = ifelse(input$choix_rose == "opt1", "#ffc4cf", "#5f5f5f"))+
